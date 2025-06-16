@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Leaf, MapPin, Phone, Mail, Award, Recycle, Calendar, Globe, History, User, Info, Map, Clock, Coffee, Heart } from "lucide-react";
+import { Coffee, Clock, MapPin, Phone, Mail, Award, Calendar, Globe, User, Info, ShoppingCart, CreditCard, Menu, X, Star, Heart, Zap, Shield } from "lucide-react";
 
 interface DashboardFeature {
   title: string;
@@ -12,17 +11,22 @@ interface DashboardFeature {
   href: string;
 }
 
-interface WasteType {
+interface MenuItem {
   icon: string;
   name: string;
   color: string;
-  count: string;
+  price: string;
+  description: string;
 }
 
-export default function Dashboard() {
+
+
+export default function CafeDashboard() {
   const [currentTime, setCurrentTime] = useState<string>("");
   const [activeFeature, setActiveFeature] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -36,529 +40,484 @@ export default function Dashboard() {
     // Feature rotation
     const featureInterval = setInterval(() => {
       setActiveFeature(prev => (prev + 1) % features.length);
-    }, 4000);
+    }, 5000);
     
     // Testimonial rotation
     const testimonialTimer = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 8000);
+
+    // Scroll detection
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
     
     return () => {
       clearInterval(timer);
       clearInterval(featureInterval);
       clearInterval(testimonialTimer);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const features: DashboardFeature[] = [
     {
-      title: "Smart Pickup",
-      description: "AI-powered scheduling for optimal waste collection routes",
-      icon: <Calendar className="w-6 h-6" />,
-      color: "bg-[#F0E2CC]",
-      href: "/smart-pickup"
+      title: "Premium Coffee",
+      description: "Handcrafted beverages using the finest beans from around the world",
+      icon: <Coffee className="w-6 h-6" />,
+      color: "from-amber-400 to-orange-500",
+      href: "/menu"
     },
     {
-      title: "Smart Locations",
-      description: "IoT-enabled drop boxes with real-time capacity monitoring",
-      icon: <MapPin className="w-6 h-6" />,
-      color: "bg-[#E6D7C3]",
+      title: "Cozy Atmosphere",
+      description: "Warm, inviting spaces perfect for work, meetings, or relaxation",
+      icon: <Heart className="w-6 h-6" />,
+      color: "from-rose-400 to-pink-500",
       href: "/locations"
     },
     {
-      title: "Eco Rewards",
-      description: "Blockchain-verified points for sustainable waste disposal",
-      icon: <Award className="w-6 h-6" />,
-      color: "bg-[#F0E2CC]",
+      title: "Fast Service",
+      description: "Quick, efficient service without compromising on quality",
+      icon: <Zap className="w-6 h-6" />,
+      color: "from-emerald-400 to-teal-500",
       href: "/rewards"
     },
     {
-      title: "Green Impact",
-      description: "Real-time carbon footprint reduction tracking",
-      icon: <Globe className="w-6 h-6" />,
-      color: "bg-[#E6D7C3]",
-      href: "/impact"
+      title: "Sustainable",
+      description: "100% ethically sourced ingredients and eco-friendly practices",
+      icon: <Shield className="w-6 h-6" />,
+      color: "from-blue-400 to-indigo-500",
+      href: "/about"
     }
   ];
 
-  const wasteTypes: WasteType[] = [
-    { icon: "🔄", name: "Plastic", color: "from-[#C8A586] to-[#E6D7C3]", count: "2.3k" },
-    { icon: "📄", name: "Paper", color: "from-[#D4B999] to-[#F0E2CC]", count: "1.8k" },
-    { icon: "⚙️", name: "Metal", color: "from-[#BFA58A] to-[#E6D7C3]", count: "945" },
-    { icon: "🌱", name: "Organic", color: "from-[#C8A586] to-[#D4B999]", count: "3.1k" }
-  ];
-
-  const featureButtons = [
-    { name: "Recycling Centers", icon: Map, href: "/recycling-centers" },
-    { name: "Waste Tracking", icon: History, href: "/waste-tracking" },
-    { name: "Collection", icon: Calendar, href: "/collection" },
-    { name: "Profile & Rewards", icon: User, href: "/profile" },
-    { name: "About Us", icon: Info, href: "/about" },
+  const menuItems: MenuItem[] = [
+    { 
+      icon: "☕", 
+      name: "Signature Espresso", 
+      color: "from-amber-50 to-amber-100", 
+      price: "$3.50",
+      description: "Rich, bold flavor with notes of chocolate"
+    },
+    { 
+      icon: "🥛", 
+      name: "Vanilla Latte", 
+      color: "from-rose-50 to-rose-100", 
+      price: "$4.50",
+      description: "Smooth espresso with steamed milk and vanilla"
+    },
+    { 
+      icon: "🍫", 
+      name: "Dark Mocha", 
+      color: "from-stone-50 to-stone-100", 
+      price: "$5.00",
+      description: "Decadent chocolate and espresso blend"
+    },
+    { 
+      icon: "❄️", 
+      name: "Cold Brew", 
+      color: "from-blue-50 to-blue-100", 
+      price: "$4.00",
+      description: "Smooth, refreshing coffee served ice-cold"
+    }
   ];
 
   const testimonials = [
     {
-      name: "Sarah J.",
-      comment: "EcoWaste has made recycling so convenient! The rewards program is a great incentive.",
+      name: "Sarah Johnson",
+      role: "Coffee Enthusiast",
+      comment: "The atmosphere here is absolutely magical. Every cup tells a story, and the baristas are true artists.",
       rating: 5,
+      avatar: "🌟"
     },
     {
-      name: "Michael T.",
-      comment: "The smart bins notify me when they're full - no more guessing when to take out recycling!",
+      name: "Michael Chen",
+      role: "Daily Customer",
+      comment: "I've tried coffee shops all over the city, but nothing compares to the quality and consistency here.",
       rating: 5,
+      avatar: "☕"
     },
     {
-      name: "Emily R.",
-      comment: "I love seeing my environmental impact in real-time. It's motivating me to recycle more!",
+      name: "Emily Rodriguez",
+      role: "Local Business Owner",
+      comment: "Perfect spot for client meetings. The ambiance is professional yet cozy, and the WiFi is excellent.",
       rating: 5,
+      avatar: "💼"
+    }
+  ];
+
+  const stats = [
+    { 
+      number: "247", 
+      label: "Cups Served Today", 
+      icon: <Coffee className="w-8 h-8" />, 
+      color: "from-amber-500 to-orange-600",
+      bgColor: "from-amber-50 to-orange-50"
+    },
+    { 
+      number: "89", 
+      label: "Happy Customers", 
+      icon: <User className="w-8 h-8" />, 
+      color: "from-rose-500 to-pink-600",
+      bgColor: "from-rose-50 to-pink-50"
+    },
+    { 
+      number: "100%", 
+      label: "Ethically Sourced", 
+      icon: <Globe className="w-8 h-8" />, 
+      color: "from-emerald-500 to-teal-600",
+      bgColor: "from-emerald-50 to-teal-50"
     }
   ];
 
   return (
-    <div className="min-h-screen bg-[#F8F3EB] text-[#3b2e28] font-sans overflow-x-hidden">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-[#E6D7C3]">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Leaf className="w-6 h-6 text-[#6B4226]" />
-            <span className="text-2xl font-bold text-[#6B4226]">Eco<span className="text-[#8B4513]">Waste</span></span>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
+      {/* Main Content */}
+      <div className="w-full">{/* Floating Header */}
+        <div className={`fixed top-6 right-6 z-40 flex items-center gap-4 transition-all duration-300 ${
+          isScrolled ? 'bg-white/90 backdrop-blur-md rounded-2xl px-6 py-3 shadow-lg' : ''
+        }`}>
+          <div className="flex items-center gap-2 text-amber-800">
+            <Clock className="w-5 h-5" />
+            <span className="font-semibold">{currentTime}</span>
           </div>
-          <div className="flex items-center space-x-6">
-            <span className="hidden md:block text-sm font-medium">{currentTime}</span>
+          <div className="hidden sm:flex items-center gap-2 text-emerald-600">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">Open Now</span>
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative py-24 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F8F3EB]/80 to-[#F8F3EB] z-0" />
-        
-        <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-4"
-          >
-            <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight bg-gradient-to-r from-[#3B2314] to-[#6B4226] text-transparent bg-clip-text">
-              EcoWaste
-            </h1>
-            <p className="text-xl text-[#5d4037] max-w-2xl mx-auto leading-relaxed">
-              Revolutionizing waste management with AI & IoT for a sustainable future
-            </p>
-          </motion.div>
+        {/* Hero Section */}
+        <section className="relative py-32 px-6 overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-amber-200/20 to-orange-300/20 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-rose-200/20 to-pink-300/20 rounded-full blur-3xl"></div>
+          </div>
           
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6"
-          >
-            <motion.a
-              href="/collection"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="w-full sm:w-auto bg-gradient-to-r from-[#6B4226] to-[#3B2314] text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transition"
-            >
-              Schedule Pickup
-            </motion.a>
-            <motion.a
-              href="/rewards"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-              className="w-full sm:w-auto bg-white text-[#6B4226] border-2 border-[#6B4226] px-8 py-3 rounded-full text-lg font-semibold shadow-md hover:shadow-lg transition"
-            >
-              Earn Rewards
-            </motion.a>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Live Stats Section */}
-      <section className="py-16 px-6 bg-gradient-to-b from-[#F8F3EB] to-[#F0E2CC]">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-center space-x-3 mb-12"
-          >
-            <div className="h-px bg-[#C8A586] w-12" />
-            <h2 className="text-3xl font-bold text-center text-[#4A2C1B]">Your Impact</h2>
-            <div className="h-px bg-[#C8A586] w-12" />
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              className="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all relative group"
-            >
-              <div className="flex items-center gap-3 text-gray-700 mb-4">
-                <div className="w-3 h-3 bg-[#6B4226] rounded-full animate-pulse"></div>
-                <span className="text-lg font-medium">Live Tracking</span>
+          <div className="relative z-10 max-w-6xl mx-auto text-center space-y-12">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg mb-8">
+                <Star className="w-5 h-5 text-amber-500 fill-current" />
+                <span className="text-amber-800 font-semibold">Premium Coffee Experience</span>
+                <Star className="w-5 h-5 text-amber-500 fill-current" />
               </div>
-              <div className="text-5xl font-bold text-[#6B4226] mb-2">12.5k</div>
-              <p className="text-gray-600">Kg Recycled</p>
-              <div className="absolute bottom-4 right-4 text-[#E6D7C3] group-hover:text-[#D4B999] transition">
-                <Leaf className="w-12 h-12" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              className="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all relative group"
-            >
-              <div className="flex items-center gap-3 text-gray-700 mb-4">
-                <div className="w-3 h-3 bg-[#8B4513] rounded-full animate-pulse"></div>
-                <span className="text-lg font-medium">Community</span>
-              </div>
-              <div className="text-5xl font-bold text-[#8B4513] mb-2">890</div>
-              <p className="text-gray-600">Active Users Nearby</p>
-              <div className="absolute bottom-4 right-4 text-[#E6D7C3] group-hover:text-[#D4B999] transition">
-                <User className="w-12 h-12" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -8 }}
-              className="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all relative group"
-            >
-              <div className="flex items-center gap-3 text-gray-700 mb-4">
-                <div className="w-3 h-3 bg-[#C87D2B] rounded-full animate-pulse"></div>
-                <span className="text-lg font-medium">Efficiency</span>
-              </div>
-              <div className="text-5xl font-bold text-[#C87D2B] mb-2">45%</div>
-              <p className="text-gray-600">CO₂ Reduced</p>
-              <div className="absolute bottom-4 right-4 text-[#E6D7C3] group-hover:text-[#D4B999] transition">
-                <Globe className="w-12 h-12" />
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Buttons Section */}
-      <section className="py-16 px-6 bg-[#F8F3EB]">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10"
-        >
-          <h2 className="text-3xl md:text-5xl font-bold text-[#4A2C1B] mb-4">
-            Explore Our <span className="text-[#6B4226]">Features</span>
-          </h2>
-          <p className="text-xl text-[#5d4037] max-w-2xl mx-auto">
-            Access key functionalities for smarter waste management
-          </p>
-        </motion.div>
-
-        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          {featureButtons.map((button, index) => {
-            const Icon = button.icon;
-            return (
-              <motion.a
-                key={index}
-                href={button.href}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -8, boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)" }}
-                whileTap={{ scale: 0.98 }}
-                className="flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-[#E6D7C3] shadow-sm transition-all duration-300 text-center group"
-              >
-                <div className="p-4 mb-4 rounded-xl bg-[#6B4226] group-hover:bg-[#8B4513] transition-colors duration-300">
-                  <Icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-800 group-hover:text-[#6B4226] transition-colors">
-                  {button.name}
-                </h3>
-              </motion.a>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-16 px-6 bg-gradient-to-b from-[#F8F3EB] to-[#F0E2CC]">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-center space-x-3 mb-12"
-          >
-            <div className="h-px bg-[#C8A586] w-12" />
-            <h2 className="text-3xl font-bold text-center text-[#4A2C1B]">How It Works</h2>
-            <div className="h-px bg-[#C8A586] w-12" />
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => {
-              const isActive = activeFeature === index;
               
-              return (
-                <motion.div
+              <h1 className="text-7xl md:text-8xl font-black tracking-tight mb-6">
+                <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 text-transparent bg-clip-text">
+                  Brew
+                </span>
+                <br />
+                <span className="text-amber-900">& Bliss</span>
+              </h1>
+              
+              <p className="text-2xl text-amber-800/80 max-w-3xl mx-auto leading-relaxed font-light">
+                Where every cup is crafted with passion, precision, and the finest ingredients from around the world
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <button 
+                onClick={() => window.location.href = '/menu-order'}
+                className="group relative bg-gradient-to-r from-amber-600 to-orange-600 text-white px-10 py-4 rounded-2xl text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-amber-700 to-orange-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span className="relative flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5" />
+                  Explore Menu
+                </span>
+              </button>
+              
+              <button 
+                onClick={() => window.location.href = '/reservation'}
+                className="group bg-white/90 backdrop-blur-sm text-amber-700 border-2 border-amber-200 px-10 py-4 rounded-2xl text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-white hover:scale-105"
+              >
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Reserve Table
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Stats Section */}
+        <section className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-3 mb-6">
+                <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent w-20"></div>
+                <div className="w-3 h-3 bg-amber-400 rounded-full"></div>
+                <div className="h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent w-20"></div>
+              </div>
+              <h2 className="text-4xl font-bold text-amber-900 mb-4">Today's Impact</h2>
+              <p className="text-xl text-amber-700/70">Making a difference, one cup at a time</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {stats.map((stat, index) => (
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -8 }}
-                  className={`relative overflow-hidden rounded-2xl p-8 cursor-pointer transition-all duration-300 ${
-                    isActive ? 'shadow-md border border-[#C8A586]' : 'shadow-sm hover:shadow-md border border-[#E6D7C3]'
-                  } ${feature.color}`}
+                  className="group relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-white/50"
                 >
-                  <AnimatePresence>
-                    {isActive && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.2 }}
-                        exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-[#C8A586]/30"
-                      />
-                    )}
-                  </AnimatePresence>
+                  <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgColor} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
                   
                   <div className="relative z-10">
-                    <div className={`mb-6 p-4 rounded-2xl transition-all duration-300 inline-flex ${
-                      isActive ? 'bg-[#6B4226]' : 'bg-[#8B4513]'
-                    }`}>
-                      {feature.icon}
+                    <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${stat.color} text-white mb-6 shadow-lg`}>
+                      {stat.icon}
                     </div>
                     
-                    <h3 className="text-xl font-bold mb-3 text-gray-900">
-                      {feature.title}
-                    </h3>
+                    <div className="text-5xl font-black text-amber-900 mb-3 group-hover:scale-110 transition-transform">
+                      {stat.number}
+                    </div>
                     
-                    <p className="text-gray-600">
-                      {feature.description}
+                    <p className="text-amber-700/80 font-medium text-lg">
+                      {stat.label}
                     </p>
                   </div>
-                </motion.div>
-              );
-            })}
+                  
+                  <div className="absolute top-4 right-4 w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Waste Types Section */}
-      <section className="py-16 px-6 bg-[#F8F3EB]">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-[#E6D7C3]"
-          >
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="order-2 lg:order-1 min-w-[280px]"
-              >
-                <div className="relative">
-                  <div className="absolute -inset-4 bg-[#E6D7C3]/30 rounded-2xl blur-xl"></div>
-                  <div className="relative bg-white rounded-2xl p-8 border border-[#E6D7C3] shadow-sm">
-                    <div className="grid grid-cols-2 gap-6">
-                      {wasteTypes.map((waste, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          transition={{ duration: 0.5, delay: index * 0.1 }}
-                          viewport={{ once: true }}
-                          whileHover={{ y: -5 }}
-                          className="group bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border border-[#E6D7C3]"
-                        >
-                          <div className={`mb-4 p-3 rounded-lg bg-gradient-to-br ${waste.color} text-gray-800 text-center shadow-sm`}>
-                            <div className="text-2xl mb-1">{waste.icon}</div>
-                            <div className="text-xs font-medium">{waste.count} tons</div>
-                          </div>
-                          <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#6B4226] transition-colors">
-                            {waste.name}
-                          </h3>
-                        </motion.div>
-                      ))}
+        {/* Menu Section */}
+        <section className="py-20 px-6 bg-white/30 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold mb-6">
+                <span className="text-amber-900">Signature</span>
+                <span className="bg-gradient-to-r from-amber-600 to-orange-600 text-transparent bg-clip-text"> Creations</span>
+              </h2>
+              <p className="text-xl text-amber-700/70 max-w-2xl mx-auto">
+                Carefully crafted beverages that define our passion for exceptional coffee
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {menuItems.map((item, index) => (
+                <div
+                  key={index}
+                  className="group relative bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105 border border-white/50"
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                  
+                  <div className="relative z-10">
+                    <div className="text-6xl mb-6 text-center group-hover:scale-110 transition-transform">
+                      {item.icon}
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-amber-900 mb-2 text-center">
+                      {item.name}
+                    </h3>
+                    
+                    <p className="text-amber-700/60 text-sm text-center mb-4 leading-relaxed">
+                      {item.description}
+                    </p>
+                    
+                    <div className="text-center">
+                      <span className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-2 rounded-full font-bold shadow-lg">
+                        {item.price}
+                      </span>
                     </div>
                   </div>
                 </div>
-              </motion.div>
-              
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-                transition={{ duration: 0.6 }}
-                className="order-1 lg:order-2"
-              >
-                <div className="space-y-6">
-                  <div className="inline-flex items-center gap-2 bg-[#E6D7C3] text-[#6B4226] px-4 py-2 rounded-full text-sm font-medium">
-                    <Recycle className="w-4 h-4" />
-                    Smart Sorting
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-20 px-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold text-amber-900 mb-6">Why Choose Us</h2>
+              <p className="text-xl text-amber-700/70 max-w-2xl mx-auto">
+                Experience the difference that passion and quality make
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {features.map((feature, index) => {
+                const isActive = activeFeature === index;
+                
+                return (
+                  <div
+                    key={index}
+                    className={`group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:scale-105 ${
+                      isActive 
+                        ? 'bg-white shadow-2xl border-2 border-amber-200' 
+                        : 'bg-white/80 backdrop-blur-sm shadow-xl hover:shadow-2xl border border-white/50'
+                    }`}
+                  >
+                    {isActive && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50 opacity-50"></div>
+                    )}
+                    
+                    <div className="relative z-10">
+                      <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.color} text-white mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                        {feature.icon}
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-amber-900 mb-3">
+                        {feature.title}
+                      </h3>
+                      
+                      <p className="text-amber-700/70 leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                    
+                    {isActive && (
+                      <div className="absolute top-4 right-4 w-3 h-3 bg-amber-400 rounded-full animate-pulse"></div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-20 px-6 bg-gradient-to-br from-amber-900 to-orange-900 text-white relative overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0">
+            <div className="absolute top-10 left-10 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-10 right-10 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+          </div>
+          
+          <div className="relative z-10 max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-5xl font-bold mb-6">Customer Stories</h2>
+              <p className="text-xl text-amber-200/80 max-w-2xl mx-auto">
+                Hear what our community has to say about their Brew & Bliss experience
+              </p>
+            </div>
+            
+            <div className="relative">
+              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-12 shadow-2xl border border-white/20">
+                <div className="text-8xl text-amber-300/30 absolute top-8 left-8">"</div>
+                
+                <div className="relative z-10 text-center">
+                  <div className="text-6xl mb-8">
+                    {testimonials[currentTestimonial].avatar}
                   </div>
                   
-                  <h2 className="text-3xl md:text-4xl font-bold text-[#4A2C1B] leading-tight">
-                    Choose Your <span className="text-[#6B4226]">Waste Type</span>
-                  </h2>
-                  
-                  <p className="text-lg md:text-xl text-[#5d4037] leading-relaxed">
-                    Our AI-powered sorting system automatically categorizes your waste for maximum 
-                    recycling efficiency. Each type is processed using cutting-edge environmental technologies.
+                  <p className="text-2xl font-light italic mb-8 leading-relaxed text-white/90">
+                    {testimonials[currentTestimonial].comment}
                   </p>
                   
-                  <div className="space-y-4">
-                    {[
-                      "Real-time contamination detection",
-                      "Automated quality assessment",
-                      "Optimized processing pathways"
-                    ].map((item, index) => (
-                      <motion.div 
-                        key={index}
-                        initial={{ opacity: 0, x: 20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        viewport={{ once: true }}
-                        whileHover={{ x: 5 }}
-                        className="flex items-center gap-3"
-                      >
-                        <div className={`w-2 h-2 rounded-full ${
-                          index === 0 ? 'bg-[#6B4226]' : 
-                          index === 1 ? 'bg-[#8B4513]' : 'bg-[#C87D2B]'
-                        }`}></div>
-                        <span className="text-[#5d4037]">{item}</span>
-                      </motion.div>
+                  <div className="flex justify-center mb-6">
+                    {Array.from({ length: testimonials[currentTestimonial].rating }).map((_, i) => (
+                      <Star key={i} className="w-6 h-6 text-amber-400 fill-current" />
                     ))}
                   </div>
+                  
+                  <div>
+                    <p className="font-bold text-xl text-white">
+                      {testimonials[currentTestimonial].name}
+                    </p>
+                    <p className="text-amber-200/80">
+                      {testimonials[currentTestimonial].role}
+                    </p>
+                  </div>
                 </div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-16 px-6 bg-gradient-to-b from-[#F8F3EB] to-[#F0E2CC]">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-center space-x-3 mb-12"
-          >
-            <div className="h-px bg-[#C8A586] w-12" />
-            <h2 className="text-3xl font-bold text-center text-[#4A2C1B]">What Our Users Say</h2>
-            <div className="h-px bg-[#C8A586] w-12" />
-          </motion.div>
-          
-          <motion.div 
-            key={currentTestimonial}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-2xl p-8 shadow-xl border border-[#E6D7C3] relative"
-          >
-            <div className="text-6xl text-[#E6D7C3] absolute top-6 left-6">"</div>
-            <div className="relative z-10">
-              <p className="text-lg text-[#5d4037] font-medium italic mb-6 text-center">
-                {testimonials[currentTestimonial].comment}
-              </p>
-              <div className="flex flex-col items-center">
-                <div className="text-[#C87D2B] mb-2">
-                  {"⭐".repeat(testimonials[currentTestimonial].rating)}
-                </div>
-                <p className="font-semibold text-[#3b2e28]">{testimonials[currentTestimonial].name}</p>
+                
+                <div className="text-8xl text-amber-300/30 absolute bottom-8 right-8">"</div>
+              </div>
+              
+              {/* Testimonial Indicators */}
+              <div className="flex justify-center mt-8 gap-3">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentTestimonial(index)}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      currentTestimonial === index 
+                        ? 'bg-amber-400 w-8' 
+                        : 'bg-white/30 hover:bg-white/50'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
-            <div className="text-6xl text-[#E6D7C3] absolute bottom-6 right-6 rotate-180">"</div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Footer */}
-      <footer className="bg-[#3B2314] text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div>
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Leaf className="w-5 h-5" />
-              EcoWaste
-            </h3>
-            <p className="text-white/80">123 Green Street</p>
-            <p className="text-white/80">Eco District, CA 90210</p>
-            <p className="text-white/80">info@ecowaste.com</p>
+        {/* Footer */}
+        <footer className="bg-gradient-to-br from-amber-950 to-orange-950 text-white py-16 px-6">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl flex items-center justify-center">
+                  <Coffee className="w-7 h-7 text-white" />
+                </div>
+                <span className="text-2xl font-bold">Brew & Bliss</span>
+              </div>
+              <p className="text-white/70 mb-6 text-lg leading-relaxed">
+                Creating exceptional coffee experiences since 2020. Every cup tells a story of passion, quality, and community.
+              </p>
+              <div className="space-y-2 text-white/80">
+                <p className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  123 Coffee Street, Downtown, CA 90210
+                </p>
+                <p className="flex items-center gap-2">
+                  <Mail className="w-4 h-4" />
+                  hello@brewandbliss.com
+                </p>
+                <p className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  (555) 123-BREW
+                </p>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-xl font-bold mb-6">Quick Links</h3>
+              <ul className="space-y-3">
+                {['Our Menu', 'Locations', 'Rewards', 'About Us', 'Contact'].map((link) => (
+                  <li key={link}>
+                    <a href="#" className="text-white/70 hover:text-white transition-colors flex items-center gap-2 group">
+                      <div className="w-1 h-1 bg-amber-400 rounded-full group-hover:w-2 transition-all"></div>
+                      {link}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-xl font-bold mb-6">Hours</h3>
+              <div className="space-y-2 text-white/80 mb-8">
+                <p>Monday - Friday: 7am - 7pm</p>
+                <p>Saturday - Sunday: 8am - 6pm</p>
+              </div>
+              
+              <div>
+                <h4 className="font-semibold mb-4">Stay Connected</h4>
+                <div className="flex">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="flex-1 px-4 py-3 rounded-l-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  />
+                  <button className="bg-gradient-to-r from-amber-600 to-orange-600 px-6 py-3 rounded-r-xl font-semibold hover:from-amber-700 hover:to-orange-700 transition-all">
+                    Join
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
           
-          <div>
-            <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              {featureButtons.map((button, index) => (
-                <li key={index}>
-                  <a href={button.href} className="text-white/80 hover:text-white transition">
-                    {button.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
+          <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-white/20 text-center text-white/50">
+            <p>© {new Date().getFullYear()} Brew & Bliss. Crafted with ❤️ for coffee lovers everywhere.</p>
           </div>
-          
-          <div>
-            <h3 className="text-xl font-bold mb-4">Stay Connected</h3>
-            <div className="flex space-x-4 mb-6">
-              <a href="#" className="text-white hover:text-[#F0E2CC] transition">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              </a>
-              <a href="#" className="text-white hover:text-[#F0E2CC] transition">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
-              </a>
-              <a href="#" className="text-white hover:text-[#F0E2CC] transition">
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
-            </div>
-            <div className="mt-6">
-              <form className="flex">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="px-4 py-2 rounded-l-lg focus:outline-none flex-1 bg-white/10 text-white"
-                />
-                <button className="bg-[#C8A586] text-[#3B2314] px-4 py-2 rounded-r-lg font-medium hover:bg-[#E6D7C3] transition">
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-white/20 text-center text-white/60 text-sm">
-          © {new Date().getFullYear()} EcoWaste. All rights reserved.
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
