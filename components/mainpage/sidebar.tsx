@@ -221,7 +221,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 px-2"
                   >
-                    {link.description}
                   </motion.p>
                 )}
               </div>
