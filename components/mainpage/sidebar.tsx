@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   IconArrowLeft,
   IconDashboard,
@@ -11,6 +11,10 @@ import {
   IconUser,
   IconMenu2,
   IconX,
+  IconChevronDown,
+  IconBell,
+  IconSettings,
+  IconLogout,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -27,59 +31,135 @@ const SidebarLink = ({
   active, 
   onClick, 
   open,
-  isHovered 
+  isHovered,
+  hasNotification = false
 }: {
   link: {
     label: string;
     icon: React.ReactNode;
     key: string;
     href?: string;
+    subItems?: Array<{ label: string; key: string; href: string }>;
   };
   active?: boolean;
   onClick: () => void;
   open: boolean;
   isHovered: boolean;
+  hasNotification?: boolean;
 }) => {
-  const showTooltip = !open && isHovered;
+  const [showSubItems, setShowSubItems] = useState(false);
+  const showTooltip = !open && isHovered && !link.subItems;
+
+  useEffect(() => {
+    if (!open) setShowSubItems(false);
+  }, [open]);
+
+  const handleClick = () => {
+    if (link.subItems && open) {
+      setShowSubItems(!showSubItems);
+    } else {
+      onClick();
+    }
+  };
 
   return (
     <motion.div className="relative">
       <motion.button
-        whileHover={{ scale: 1.03 }}
+        whileHover={{ scale: 1.02, x: 2 }}
         whileTap={{ scale: 0.98 }}
-        onClick={onClick}
+        onClick={handleClick}
         className={`
-          flex items-center p-3 rounded-xl w-full transition-all duration-200
+          flex items-center p-3 rounded-xl w-full transition-all duration-300 relative overflow-hidden
           ${active
-            ? "bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-md"
-            : "text-amber-900 hover:bg-amber-50"
+            ? "bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-white shadow-lg shadow-amber-200/50"
+            : "text-amber-900 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:shadow-sm"
           }
           ${!open ? "justify-center" : "px-4"}
+          group
         `}
       >
-        <span className={`flex ${active ? "text-white" : "text-amber-600"}`}>
-          {link.icon}
-        </span>
-        {open && (
-          <motion.span
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="ml-3 font-medium"
-          >
-            {link.label}
-          </motion.span>
-        )}
+        {/* Animated background highlight */}
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-amber-500/20 rounded-xl"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: active ? 1 : 0,
+            scale: active ? 1 : 0.8 
+          }}
+          transition={{ duration: 0.3 }}
+        />
+        
+        <div className="relative flex items-center w-full">
+          <span className={`flex relative ${active ? "text-white" : "text-amber-600 group-hover:text-amber-700"}`}>
+            {link.icon}
+            {hasNotification && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
+              />
+            )}
+          </span>
+          
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="ml-3 flex-1 flex items-center justify-between"
+            >
+              <span className="font-medium text-sm">
+                {link.label}
+              </span>
+              {link.subItems && (
+                <motion.div
+                  animate={{ rotate: showSubItems ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <IconChevronDown className="w-4 h-4" />
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </div>
       </motion.button>
 
+      {/* Sub-items */}
+      <AnimatePresence>
+        {open && showSubItems && link.subItems && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="ml-4 mt-1 space-y-1 border-l-2 border-amber-200 pl-4"
+          >
+            {link.subItems.map((subItem) => (
+              <motion.button
+                key={subItem.key}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                whileHover={{ x: 2 }}
+                onClick={() => onClick()}
+                className="flex items-center p-2 rounded-lg w-full text-sm text-amber-700 hover:bg-amber-50 hover:text-amber-800 transition-all duration-200"
+              >
+                {subItem.label}
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tooltip */}
       <AnimatePresence>
         {showTooltip && (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ type: "spring", damping: 25 }}
-            className="absolute left-full ml-2 top-0 bg-white shadow-lg rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-amber-100"
+            initial={{ opacity: 0, x: 20, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 20, scale: 0.9 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white shadow-xl rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-gray-700"
           >
+            <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45 border-l border-b border-gray-700" />
             {link.label}
           </motion.div>
         )}
@@ -89,25 +169,101 @@ const SidebarLink = ({
 };
 
 const Logo = ({ open }: { open: boolean }) => (
-  <Link href="/" className="flex items-center px-2 py-6">
+  <Link href="/" className="flex items-center px-2 py-6 group">
     <motion.div
-      className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-md"
+      className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 flex items-center justify-center shadow-lg relative overflow-hidden"
       whileHover={{ rotate: 5, scale: 1.05 }}
-      transition={{ type: "spring" }}
+      transition={{ type: "spring", damping: 15 }}
     >
-      <IconCoffee className="text-white w-5 h-5" />
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      />
+      <IconCoffee className="text-white w-6 h-6 relative z-10" />
     </motion.div>
     {open && (
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.1 }}
         className="ml-3"
       >
-        <h1 className="text-xl font-bold text-amber-900">Brew & Bliss</h1>
-        <p className="text-xs text-amber-600">Coffee Experience</p>
+        <h1 className="text-xl font-bold text-amber-900 group-hover:text-amber-800 transition-colors">
+          Brew & Bliss
+        </h1>
+        <p className="text-xs text-amber-600 font-medium">
+          Coffee Experience
+        </p>
       </motion.div>
     )}
   </Link>
+);
+
+const UserProfile = ({ 
+  open, 
+  onClick, 
+  active, 
+  isHovered 
+}: {
+  open: boolean;
+  onClick: () => void;
+  active: boolean;
+  isHovered: boolean;
+}) => (
+  <motion.div
+    className="relative"
+    whileHover={{ scale: 1.02 }}
+  >
+    <motion.button
+      onClick={onClick}
+      className={`
+        flex items-center p-3 rounded-xl w-full transition-all duration-300
+        ${active
+          ? "bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-lg"
+          : "text-amber-900 hover:bg-amber-50"
+        }
+        ${!open ? "justify-center" : "px-4"}
+      `}
+    >
+      <div className="relative">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-200 via-amber-300 to-amber-400 flex items-center justify-center shadow-md">
+          <IconUser className="w-4 h-4 text-amber-800" />
+        </div>
+        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
+      </div>
+      
+      {open && (
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="ml-3 flex-1 text-left"
+        >
+          <p className="font-medium text-sm">John Doe</p>
+          <p className="text-xs text-amber-600">Premium Member</p>
+        </motion.div>
+      )}
+    </motion.button>
+
+    {/* Tooltip for collapsed state */}
+    <AnimatePresence>
+      {!open && isHovered && (
+        <motion.div
+          initial={{ opacity: 0, x: 20, scale: 0.9 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          exit={{ opacity: 0, x: 20, scale: 0.9 }}
+          className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white shadow-xl rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50"
+        >
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+          <div>
+            <p className="font-medium">John Doe</p>
+            <p className="text-xs text-gray-300">Premium Member</p>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </motion.div>
 );
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -127,22 +283,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
       href: "/dashboard",
     },
     {
-      label: "Menu & Order",
+      label: "Menu & Orders",
       key: "menu-order",
       icon: <IconShoppingCart className="w-5 h-5" />,
       href: "/menu-order",
+      subItems: [
+        { label: "View Menu", key: "view-menu", href: "/menu" },
+        { label: "Order History", key: "order-history", href: "/orders" },
+        { label: "Quick Order", key: "quick-order", href: "/quick-order" },
+      ]
     },
     {
-      label: "Reservation",
+      label: "Reservations",
       key: "reservation",
       icon: <IconCalendar className="w-5 h-5" />,
       href: "/reservation",
     },
     {
-      label: "Payment",
+      label: "Payments",
       key: "payment",
       icon: <IconCash className="w-5 h-5" />,
       href: "/payment",
+    },
+    {
+      label: "Notifications",
+      key: "notifications",
+      icon: <IconBell className="w-5 h-5" />,
+      href: "/notifications",
     },
     {
       label: "About Us",
@@ -151,9 +318,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
       href: "/about",
     },
     {
-      label: "Logout",
-      key: "logout",
-      icon: <IconArrowLeft className="w-5 h-5" />,
+      label: "Settings",
+      key: "settings",
+      icon: <IconSettings className="w-5 h-5" />,
+      href: "/settings",
     },
   ];
 
@@ -161,82 +329,151 @@ export const Sidebar: React.FC<SidebarProps> = ({
     setActivePage(key);
     if (href) {
       router.push(href);
-    } else if (key === 'logout') {
-      router.push('/login');
     }
+  };
+
+  const handleLogout = () => {
+    // Add logout logic here
+    router.push('/login');
   };
 
   const toggleSidebar = () => {
     setOpen(!open);
   };
 
+  // Handle responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Check on mount
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
-    <motion.aside
-      initial={{ width: open ? 260 : 80 }}
-      animate={{ width: open ? 260 : 80 }}
-      transition={{ type: "spring", damping: 20, stiffness: 200 }}
-      className={`
-        h-screen fixed left-0 top-0 z-50
-        bg-gradient-to-b from-amber-50 to-white
-        border-r border-amber-100
-        shadow-lg overflow-hidden
-        flex flex-col
-      `}
-    >
-      <div className="flex-1 flex flex-col p-4 overflow-y-auto">
-        <div className="flex justify-between items-center">
-          <Logo open={open} />
-          <motion.button
-            onClick={toggleSidebar}
-            className="p-2 rounded-full hover:bg-amber-100 text-amber-700"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {open ? <IconX size={20} /> : <IconMenu2 size={20} />}
-          </motion.button>
+    <>
+      {/* Overlay for mobile */}
+      <AnimatePresence>
+        {open && window.innerWidth < 768 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <motion.aside
+        initial={{ width: open ? 280 : 80 }}
+        animate={{ width: open ? 280 : 80 }}
+        transition={{ type: "spring", damping: 20, stiffness: 200 }}
+        className={`
+          h-screen fixed left-0 top-0 z-50
+          bg-gradient-to-b from-white via-amber-50/30 to-white
+          border-r border-amber-100/50
+          shadow-xl backdrop-blur-sm
+          flex flex-col
+          ${open ? 'shadow-2xl' : 'shadow-lg'}
+        `}
+      >
+        {/* Header */}
+        <div className="flex-shrink-0 p-4 border-b border-amber-100/50">
+          <div className="flex justify-between items-center">
+            <Logo open={open} />
+            <motion.button
+              onClick={toggleSidebar}
+              className="p-2 rounded-full hover:bg-amber-100/50 text-amber-700 transition-colors duration-200"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <motion.div
+                animate={{ rotate: open ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {open ? <IconX size={20} /> : <IconMenu2 size={20} />}
+              </motion.div>
+            </motion.button>
+          </div>
         </div>
         
-        <nav className="mt-8 space-y-2">
-          {links.map((link) => (
-            <div 
-              key={link.key}
-              onMouseEnter={() => setHoveredItem(link.key)}
-              onMouseLeave={() => setHoveredItem(null)}
-            >
-              <SidebarLink
-                link={link}
-                active={activePage === link.key}
-                onClick={() => handleLinkClick(link.key, link.href)}
-                open={open}
-                isHovered={hoveredItem === link.key}
-              />
-            </div>
-          ))}
-        </nav>
-      </div>
+        {/* Navigation */}
+        <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-amber-200 scrollbar-track-transparent">
+          <nav className="space-y-2">
+            {links.map((link, index) => (
+              <motion.div 
+                key={link.key}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                onMouseEnter={() => setHoveredItem(link.key)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <SidebarLink
+                  link={link}
+                  active={activePage === link.key}
+                  onClick={() => handleLinkClick(link.key, link.href)}
+                  open={open}
+                  isHovered={hoveredItem === link.key}
+                  hasNotification={link.key === 'notifications'}
+                />
+              </motion.div>
+            ))}
+          </nav>
+        </div>
 
-      <div 
-        className="p-4 border-t border-amber-100"
-        onMouseEnter={() => setHoveredItem('profile')}
-        onMouseLeave={() => setHoveredItem(null)}
-      >
-        <SidebarLink
-          link={{
-            key: "profile",
-            label: "My Profile",
-            icon: (
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center">
-                <IconUser className="w-3.5 h-3.5 text-amber-800" />
-              </div>
-            ),
-            href: "/profile",
-          }}
-          active={activePage === 'profile'}
-          onClick={() => handleLinkClick('profile', '/profile')}
-          open={open}
-          isHovered={hoveredItem === 'profile'}
-        />
-      </div>
-    </motion.aside>
+        {/* Footer */}
+        <div className="flex-shrink-0 p-4 border-t border-amber-100/50 space-y-2">
+          {/* User Profile */}
+          <div 
+            onMouseEnter={() => setHoveredItem('profile')}
+            onMouseLeave={() => setHoveredItem(null)}
+          >
+            <UserProfile
+              open={open}
+              onClick={() => handleLinkClick('profile', '/profile')}
+              active={activePage === 'profile'}
+              isHovered={hoveredItem === 'profile'}
+            />
+          </div>
+
+          {/* Logout Button */}
+          <motion.button
+            onClick={handleLogout}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+              flex items-center p-3 rounded-xl w-full transition-all duration-200
+              text-red-600 hover:bg-red-50 hover:text-red-700
+              ${!open ? "justify-center" : "px-4"}
+            `}
+          >
+            <IconLogout className="w-5 h-5" />
+            {open && (
+              <motion.span
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="ml-3 font-medium text-sm"
+              >
+                Logout
+              </motion.span>
+            )}
+          </motion.button>
+        </div>
+      </motion.aside>
+
+      {/* Main content spacer */}
+      <motion.div
+        animate={{ marginLeft: open ? 280 : 80 }}
+        transition={{ type: "spring", damping: 20, stiffness: 200 }}
+        className="hidden md:block"
+      />
+    </>
   );
 };
