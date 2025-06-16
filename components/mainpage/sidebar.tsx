@@ -125,41 +125,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
       key: "dashboard",
       icon: <IconBrandTabler className="h-5 w-5" />,
       href: "/dashboard",
-      description: "Analytics and overview"
+      // description: "Analytics and overview"
     },
     {
       label: "Menu & Order",
       key: "menu-order",
       icon: <IconShoppingCart className="h-5 w-5" />,
       href: "/menu-order",
-      description: "Browse and order items"
+      // description: "Browse and order items"
     },
     {
       label: "Reservation",
       key: "reservation",
       icon: <IconCalendar className="h-5 w-5" />,
       href: "/reservation",
-      description: "Book a table in advance"
+      // description: "Book a table in advance"
     },
     {
       label: "Payment",
       key: "payment",
       icon: <IconCash className="h-5 w-5" />,
       href: "/payment",
-      description: "Transaction history"
+      // description: "Transaction history"
     },
     {
       label: "About Us",
       key: "about",
       icon: <IconCoffee className="h-5 w-5" />,
       href: "/about",
-      description: "Our story and mission"
+      // description: "Our story and mission"
     },
     {
       label: "Logout",
       key: "logout",
       icon: <IconArrowLeft className="h-5 w-5" />,
-      description: "Sign out from system"
+      // description: "Sign out from system"
     },
   ];
 
@@ -221,6 +221,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 px-2"
                   >
+                    {/* {link.description} */}
                   </motion.p>
                 )}
               </div>
