@@ -71,8 +71,8 @@ const SidebarLink = ({
         className={`
           flex items-center p-3 rounded-xl w-full transition-all duration-300 relative overflow-hidden
           ${active
-            ? "bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-white shadow-lg shadow-amber-200/50"
-            : "text-amber-900 hover:bg-gradient-to-r hover:from-amber-50 hover:to-amber-100 hover:shadow-sm"
+            ? "bg-gradient-to-r from-brown-600 via-brown-500 to-brown-600 text-white shadow-lg shadow-brown-700/30"
+            : "text-brown-800 hover:bg-gradient-to-r hover:from-brown-50 hover:to-brown-100 hover:shadow-sm"
           }
           ${!open ? "justify-center" : "px-4"}
           group
@@ -80,7 +80,7 @@ const SidebarLink = ({
       >
         {/* Animated background highlight */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-amber-500/20 rounded-xl"
+          className="absolute inset-0 bg-gradient-to-r from-brown-500/20 to-brown-600/20 rounded-xl"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ 
             opacity: active ? 1 : 0,
@@ -90,7 +90,7 @@ const SidebarLink = ({
         />
         
         <div className="relative flex items-center w-full">
-          <span className={`flex relative ${active ? "text-white" : "text-amber-600 group-hover:text-amber-700"}`}>
+          <span className={`flex relative ${active ? "text-white" : "text-brown-600 group-hover:text-brown-700"}`}>
             {link.icon}
             {hasNotification && (
               <motion.div
@@ -131,7 +131,7 @@ const SidebarLink = ({
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="ml-4 mt-1 space-y-1 border-l-2 border-amber-200 pl-4"
+            className="ml-4 mt-1 space-y-1 border-l-2 border-brown-200 pl-4"
           >
             {link.subItems.map((subItem) => (
               <motion.button
@@ -140,7 +140,7 @@ const SidebarLink = ({
                 animate={{ opacity: 1, x: 0 }}
                 whileHover={{ x: 2 }}
                 onClick={() => onClick()}
-                className="flex items-center p-2 rounded-lg w-full text-sm text-amber-700 hover:bg-amber-50 hover:text-amber-800 transition-all duration-200"
+                className="flex items-center p-2 rounded-lg w-full text-sm text-brown-700 hover:bg-brown-50 hover:text-brown-800 transition-all duration-200"
               >
                 {subItem.label}
               </motion.button>
@@ -157,9 +157,9 @@ const SidebarLink = ({
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.9 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white shadow-xl rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-gray-700"
+            className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-brown-800 text-white shadow-xl rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-brown-700"
           >
-            <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45 border-l border-b border-gray-700" />
+            <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-brown-800 rotate-45 border-l border-b border-brown-700" />
             {link.label}
           </motion.div>
         )}
@@ -171,7 +171,7 @@ const SidebarLink = ({
 const Logo = ({ open }: { open: boolean }) => (
   <Link href="/" className="flex items-center px-2 py-6 group">
     <motion.div
-      className="h-10 w-10 rounded-xl bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 flex items-center justify-center shadow-lg relative overflow-hidden"
+      className="h-10 w-10 rounded-xl bg-gradient-to-br from-brown-700 via-brown-600 to-brown-800 flex items-center justify-center shadow-lg relative overflow-hidden"
       whileHover={{ rotate: 5, scale: 1.05 }}
       transition={{ type: "spring", damping: 15 }}
     >
@@ -190,10 +190,10 @@ const Logo = ({ open }: { open: boolean }) => (
         transition={{ delay: 0.1 }}
         className="ml-3"
       >
-        <h1 className="text-xl font-bold text-amber-900 group-hover:text-amber-800 transition-colors">
+        <h1 className="text-xl font-bold text-brown-800 group-hover:text-brown-700 transition-colors">
           Brew & Bliss
         </h1>
-        <p className="text-xs text-amber-600 font-medium">
+        <p className="text-xs text-brown-600 font-medium">
           Coffee Experience
         </p>
       </motion.div>
@@ -221,15 +221,15 @@ const UserProfile = ({
       className={`
         flex items-center p-3 rounded-xl w-full transition-all duration-300
         ${active
-          ? "bg-gradient-to-r from-amber-500 to-amber-400 text-white shadow-lg"
-          : "text-amber-900 hover:bg-amber-50"
+          ? "bg-gradient-to-r from-brown-600 to-brown-500 text-white shadow-lg"
+          : "text-brown-800 hover:bg-brown-50"
         }
         ${!open ? "justify-center" : "px-4"}
       `}
     >
       <div className="relative">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-200 via-amber-300 to-amber-400 flex items-center justify-center shadow-md">
-          <IconUser className="w-4 h-4 text-amber-800" />
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brown-200 via-brown-300 to-brown-400 flex items-center justify-center shadow-md">
+          <IconUser className="w-4 h-4 text-brown-800" />
         </div>
         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
       </div>
@@ -241,7 +241,7 @@ const UserProfile = ({
           className="ml-3 flex-1 text-left"
         >
           <p className="font-medium text-sm">John Doe</p>
-          <p className="text-xs text-amber-600">Premium Member</p>
+          <p className="text-xs text-brown-600">Premium Member</p>
         </motion.div>
       )}
     </motion.button>
@@ -253,12 +253,12 @@ const UserProfile = ({
           initial={{ opacity: 0, x: 20, scale: 0.9 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 20, scale: 0.9 }}
-          className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white shadow-xl rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50"
+          className="absolute left-full ml-3 top-1/2 -translate-y-1/2 bg-brown-800 text-white shadow-xl rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50"
         >
-          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+          <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-2 bg-brown-800 rotate-45" />
           <div>
             <p className="font-medium">John Doe</p>
-            <p className="text-xs text-gray-300">Premium Member</p>
+            <p className="text-xs text-brown-300">Premium Member</p>
           </div>
         </motion.div>
       )}
@@ -376,20 +376,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         transition={{ type: "spring", damping: 20, stiffness: 200 }}
         className={`
           h-screen fixed left-0 top-0 z-50
-          bg-gradient-to-b from-white via-amber-50/30 to-white
-          border-r border-amber-100/50
+          bg-gradient-to-b from-white via-brown-50/30 to-white
+          border-r border-brown-100/50
           shadow-xl backdrop-blur-sm
           flex flex-col
           ${open ? 'shadow-2xl' : 'shadow-lg'}
         `}
       >
         {/* Header */}
-        <div className="flex-shrink-0 p-4 border-b border-amber-100/50">
+        <div className="flex-shrink-0 p-4 border-b border-brown-100/50">
           <div className="flex justify-between items-center">
             <Logo open={open} />
             <motion.button
               onClick={toggleSidebar}
-              className="p-2 rounded-full hover:bg-amber-100/50 text-amber-700 transition-colors duration-200"
+              className="p-2 rounded-full hover:bg-brown-100/50 text-brown-700 transition-colors duration-200"
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -404,7 +404,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
         
         {/* Navigation */}
-        <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-amber-200 scrollbar-track-transparent">
+        <div className="flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-brown-200 scrollbar-track-transparent">
           <nav className="space-y-2">
             {links.map((link, index) => (
               <motion.div 
@@ -429,7 +429,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 p-4 border-t border-amber-100/50 space-y-2">
+        <div className="flex-shrink-0 p-4 border-t border-brown-100/50 space-y-2">
           {/* User Profile */}
           <div 
             onMouseEnter={() => setHoveredItem('profile')}
