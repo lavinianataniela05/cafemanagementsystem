@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Plus,
   Minus,
@@ -9,6 +9,9 @@ import {
   Cookie,
   Sandwich,
   Star,
+  Heart,
+  Leaf,
+  Sparkles
 } from "lucide-react";
 
 // Types
@@ -42,7 +45,12 @@ const categories: {
 const MenuOrderPage = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<CategoryKey>("coffee");
-  
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   const fullMenu: MenuItem[] = [
     // Coffee
     {
@@ -254,71 +262,98 @@ const MenuOrderPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-amber-50">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 relative overflow-hidden">
+      {/* Floating decorative elements */}
+      <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-amber-200/40 to-orange-200/40 rounded-full blur-xl animate-pulse"></div>
+      <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-to-br from-rose-200/40 to-pink-200/40 rounded-full blur-lg animate-pulse delay-1000"></div>
+      <div className="absolute bottom-32 left-20 w-24 h-24 bg-gradient-to-br from-emerald-200/40 to-green-200/40 rounded-full blur-xl animate-pulse delay-500"></div>
+      <div className="absolute bottom-20 right-16 w-12 h-12 bg-gradient-to-br from-blue-200/40 to-indigo-200/40 rounded-full blur-lg animate-pulse delay-700"></div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-amber-900 mb-2">
-            ☕ Brew & Bliss Cafe
+        <div className={`text-center mb-12 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          <div className="inline-flex items-center gap-3 mb-6 px-6 py-3 bg-gradient-to-r from-amber-100 to-orange-100 rounded-full shadow-lg border border-amber-200/50">
+            <Sparkles className="w-5 h-5 text-amber-600" />
+            <span className="text-amber-800 font-semibold text-sm tracking-wide">DELICIOUS SELECTIONS</span>
+            <Sparkles className="w-5 h-5 text-amber-600" />
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-amber-600 via-orange-500 to-amber-700 bg-clip-text text-transparent leading-tight">
+            Our Menu
           </h1>
-          <p className="text-amber-700 text-lg">Traditional & Modern Delights</p>
+          
+          <p className="text-xl text-amber-800 max-w-3xl mx-auto leading-relaxed font-light">
+            Handcrafted with love and the finest ingredients. Each item tells a story of tradition and passion.
+          </p>
+
+          <div className="flex justify-center gap-2 mt-6">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-5 h-5 text-amber-400 fill-current animate-pulse" style={{animationDelay: `${i * 150}ms`}} />
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Menu Section */}
           <div className="lg:col-span-3">
             {/* Category Tabs */}
-            <div className="flex flex-wrap gap-2 mb-6 p-2 bg-white rounded-xl shadow-sm">
+            <div className={`flex flex-wrap gap-3 mb-8 p-4 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/60 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
               {categories.map(({ id, name, icon: Icon }) => (
                 <button
                   key={id}
                   onClick={() => setActiveCategory(id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all ${
                     activeCategory === id
-                      ? "bg-amber-800 text-white shadow-md"
-                      : "bg-amber-100 text-amber-800 hover:bg-amber-200"
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md"
+                      : "bg-white text-amber-800 hover:bg-amber-50 border border-amber-100"
                   }`}
                 >
-                  <Icon size={16} />
+                  <Icon size={16} className={activeCategory === id ? "text-white" : "text-amber-600"} />
                   {name}
                 </button>
               ))}
             </div>
 
             {/* Menu Items */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '200ms'}}>
               {fullMenu
                 .filter((item) => item.category === activeCategory)
                 .map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-amber-100"
+                    className="group bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-white/60 hover:border-amber-200/60"
                   >
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-40 object-cover"
-                    />
-                    <div className="p-4">
-                      <div className="mb-3">
-                        <h3 className="text-lg font-semibold text-amber-900 mb-1">
+                    <div className="relative overflow-hidden h-48">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                      <div className="absolute top-3 right-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md">
+                        <Star className="w-3 h-3 fill-current" />
+                        {item.rating}
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <div className="mb-4">
+                        <h3 className="text-xl font-bold text-amber-900 mb-2 group-hover:text-orange-600 transition-colors duration-300">
                           {item.name}
                         </h3>
-                        <div className="flex items-center gap-1 mb-2">
-                          <Star size={14} className="text-amber-500 fill-current" />
-                          <span className="text-sm text-amber-700">{item.rating}</span>
-                        </div>
-                        <p className="text-amber-600 text-sm leading-relaxed">{item.description}</p>
+                        <p className="text-amber-700 text-sm leading-relaxed">
+                          {item.description}
+                        </p>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-bold text-amber-800">
+                        <span className="text-lg font-bold bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
                           {formatRupiah(item.price)}
                         </span>
                         <button
                           onClick={() => addToCart(item)}
-                          className="bg-amber-700 hover:bg-amber-800 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 shadow-sm"
+                          className="group-hover:bg-gradient-to-r from-amber-500 to-orange-500 bg-amber-100 text-amber-800 group-hover:text-white px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2 shadow-sm group-hover:shadow-md"
                         >
-                          <Plus size={14} /> Add
+                          <Plus size={14} className="group-hover:text-white" />
+                          Add
                         </button>
                       </div>
                     </div>
@@ -329,33 +364,40 @@ const MenuOrderPage = () => {
 
           {/* Cart Section */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-5 sticky top-6 border border-amber-100">
-              <div className="flex items-center gap-3 mb-4 pb-3 border-b border-amber-100">
-                <ShoppingCart className="text-amber-700" size={20} />
-                <h2 className="text-lg font-semibold text-amber-900">Your Order</h2>
+            <div className={`sticky top-6 bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-white/60 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{transitionDelay: '400ms'}}>
+              <div className="flex items-center gap-3 mb-5 pb-4 border-b border-amber-100">
+                <div className="bg-gradient-to-r from-amber-500 to-orange-500 p-2 rounded-lg shadow-sm">
+                  <ShoppingCart className="text-white" size={20} />
+                </div>
+                <h2 className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+                  Your Order
+                </h2>
                 {getTotalItems() > 0 && (
-                  <span className="bg-amber-700 text-white text-xs px-2 py-1 rounded-full">
+                  <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs px-2.5 py-1 rounded-full font-bold">
                     {getTotalItems()}
                   </span>
                 )}
               </div>
               
               {cart.length === 0 ? (
-                <div className="text-center py-6">
-                  <p className="text-amber-600">Your cart is empty</p>
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Heart className="w-6 h-6 text-amber-500" />
+                  </div>
+                  <p className="text-amber-600 font-light">Your cart is empty</p>
                   <p className="text-sm text-amber-500 mt-1">Add some delicious items</p>
                 </div>
               ) : (
                 <>
                   {/* Cart Items */}
-                  <div className="space-y-3 mb-5 max-h-60 overflow-y-auto">
+                  <div className="space-y-4 mb-6 max-h-60 overflow-y-auto pr-2">
                     {cart.map((item) => (
                       <div
                         key={item.id}
-                        className="flex items-center justify-between p-3 bg-amber-50 rounded-lg"
+                        className="flex items-center justify-between p-3 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100/60"
                       >
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-amber-900 text-sm truncate">
+                          <h4 className="font-semibold text-amber-900 text-sm truncate">
                             {item.name}
                           </h4>
                           <p className="text-amber-700 font-semibold text-sm">
@@ -365,7 +407,7 @@ const MenuOrderPage = () => {
                         <div className="flex items-center gap-2 ml-2">
                           <button
                             onClick={() => removeFromCart(item.id)}
-                            className="text-amber-600 hover:text-amber-800 p-1 hover:bg-amber-100 rounded"
+                            className="w-7 h-7 flex items-center justify-center text-amber-600 hover:text-white hover:bg-amber-500 rounded-lg transition-colors duration-200"
                           >
                             <Minus size={14} />
                           </button>
@@ -374,7 +416,7 @@ const MenuOrderPage = () => {
                           </span>
                           <button
                             onClick={() => addToCart(item)}
-                            className="text-amber-600 hover:text-amber-800 p-1 hover:bg-amber-100 rounded"
+                            className="w-7 h-7 flex items-center justify-center text-amber-600 hover:text-white hover:bg-amber-500 rounded-lg transition-colors duration-200"
                           >
                             <Plus size={14} />
                           </button>
@@ -385,22 +427,22 @@ const MenuOrderPage = () => {
                   
                   {/* Total and Actions */}
                   <div className="border-t border-amber-100 pt-4">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-5">
                       <span className="text-lg font-semibold text-amber-900">Total:</span>
-                      <span className="text-xl font-bold text-amber-800">
+                      <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
                         {formatRupiah(getTotalPrice())}
                       </span>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <button
                         onClick={handleOrder}
-                        className="w-full bg-amber-700 hover:bg-amber-800 text-white py-3 rounded-lg font-semibold transition-colors shadow-sm"
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
                       >
                         Place Order
                       </button>
                       <button
                         onClick={clearCart}
-                        className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 py-2 rounded-lg font-medium transition-colors"
+                        className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 py-2 rounded-xl font-medium transition-colors duration-300 border border-amber-200"
                       >
                         Clear Cart
                       </button>

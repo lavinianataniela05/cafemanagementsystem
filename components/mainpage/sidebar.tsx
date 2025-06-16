@@ -12,7 +12,6 @@ import {
   IconMenu2,
   IconX,
 } from "@tabler/icons-react";
-import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -43,10 +42,8 @@ const SidebarLink = ({
   const showTooltip = !open && isHovered;
 
   return (
-    <motion.div className="relative">
-      <motion.button
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.98 }}
+    <div className="relative">
+      <button
         onClick={onClick}
         className={`
           flex items-center p-3 rounded-xl w-full transition-all duration-200
@@ -61,51 +58,31 @@ const SidebarLink = ({
           {link.icon}
         </span>
         {open && (
-          <motion.span
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="ml-3 font-medium"
-          >
+          <span className="ml-3 font-medium">
             {link.label}
-          </motion.span>
+          </span>
         )}
-      </motion.button>
+      </button>
 
-      <AnimatePresence>
-        {showTooltip && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            transition={{ type: "spring", damping: 25 }}
-            className="absolute left-full ml-2 top-0 bg-white shadow-lg rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-amber-100"
-          >
-            {link.label}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      {showTooltip && (
+        <div className="absolute left-full ml-2 top-0 bg-white shadow-lg rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-amber-100">
+          {link.label}
+        </div>
+      )}
+    </div>
   );
 };
 
 const Logo = ({ open }: { open: boolean }) => (
   <Link href="/" className="flex items-center px-2 py-6">
-    <motion.div
-      className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-md"
-      whileHover={{ rotate: 5, scale: 1.05 }}
-      transition={{ type: "spring" }}
-    >
+    <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-md">
       <IconCoffee className="text-white w-5 h-5" />
-    </motion.div>
+    </div>
     {open && (
-      <motion.div
-        initial={{ opacity: 0, x: -10 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="ml-3"
-      >
+      <div className="ml-3">
         <h1 className="text-xl font-bold text-amber-900">Brew & Bliss</h1>
         <p className="text-xs text-amber-600">Coffee Experience</p>
-      </motion.div>
+      </div>
     )}
   </Link>
 );
@@ -171,29 +148,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   return (
-    <motion.aside
-      initial={{ width: open ? 260 : 80 }}
-      animate={{ width: open ? 260 : 80 }}
-      transition={{ type: "spring", damping: 20, stiffness: 200 }}
+    <div
       className={`
         h-screen fixed left-0 top-0 z-50
         bg-gradient-to-b from-amber-50 to-white
         border-r border-amber-100
         shadow-lg overflow-hidden
         flex flex-col
+        ${open ? 'w-64' : 'w-20'}
       `}
     >
       <div className="flex-1 flex flex-col p-4 overflow-y-auto">
         <div className="flex justify-between items-center">
           <Logo open={open} />
-          <motion.button
+          <button
             onClick={toggleSidebar}
             className="p-2 rounded-full hover:bg-amber-100 text-amber-700"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
           >
             {open ? <IconX size={20} /> : <IconMenu2 size={20} />}
-          </motion.button>
+          </button>
         </div>
         
         <nav className="mt-8 space-y-2">
@@ -237,6 +210,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           isHovered={hoveredItem === 'profile'}
         />
       </div>
-    </motion.aside>
+    </div>
   );
 };
