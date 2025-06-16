@@ -26,7 +26,7 @@ export default function RootLayout({
         <div className="flex min-h-screen">
           {shouldShowSidebar && (
             <div className="w-64 fixed left-0 top-0 h-full border-r bg-white shadow-sm z-10">
-              <Sidebar open={false} activePage={activePage} setActivePage={setActivePage} />
+              <Sidebar activePage={activePage} setActivePage={setActivePage} />
             </div>
           )}
           
