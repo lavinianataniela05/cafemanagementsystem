@@ -32,10 +32,10 @@ const ProfilePage = () => {
   };
 
   const [userProfile, setUserProfile] = useState<UserProfile>({
-    name: "Alex Brewster",
-    email: "alex.brewster@email.com",
-    phone: "+1 555-123-4567",
-    location: "123 Coffee Lane, Brewtown",
+    name: "Lavinia Nataniela Novyandi",
+    email: "lavinia.nataniela@gmail.com",
+    phone: "+62 812-3456-7890",
+    location: "JL. Majapahit No. 45, Surabaya, Indonesia",
     joinDate: "March 2022",
     loyaltyPoints: 1840,
     favoriteOrder: "Iced Vanilla Latte with Oat Milk",

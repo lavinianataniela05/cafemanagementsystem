@@ -336,23 +336,39 @@ export default function PaymentPage({ totalAmount = 125000 }: PaymentPageProps) 
                       <Coffee className="w-8 h-8 text-white" />
                     </div>
                     <div className="flex-1">
+                      <h4 className="font-semibold text-amber-900">Klepon Cake</h4>
+                    </div>
+                    <div className="font-bold text-amber-800">{formatRupiah(20000)}</div>
+                  </motion.div>
+<motion.div variants={childVariants} className="flex items-center p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100">
+                    <div className="w-16 h-16 bg-gradient-to-br from-amber-300 to-orange-400 rounded-xl mr-4 flex items-center justify-center shadow-lg">
+                      <Coffee className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="flex-1">
                       <h4 className="font-semibold text-amber-900">Caramel Macchiato</h4>
                       <p className="text-sm text-amber-700">Size: Large</p>
                     </div>
-                    <div className="font-bold text-amber-800">{formatRupiah(45000)}</div>
+                    <div className="font-bold text-amber-800">{formatRupiah(27000)}</div>
                   </motion.div>
-
                   <motion.div variants={childVariants} className="flex items-center p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100">
                     <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl mr-4 flex items-center justify-center shadow-lg">
-                      <span className="text-2xl">🥑</span>
+                      <span className="text-2xl"></span>
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-amber-900">Avocado Toast</h4>
-                      <p className="text-sm text-amber-700">Add extra egg</p>
+                      <h4 className="font-semibold text-amber-900">Soto Ayam</h4>
                     </div>
-                    <div className="font-bold text-amber-800">{formatRupiah(80000)}</div>
+                    <div className="font-bold text-amber-800">{formatRupiah(22000)}</div>
                   </motion.div>
                 </motion.div>
+                <motion.div variants={childVariants} className="flex items-center p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-100">
+                    <div className="w-16 h-16 bg-gradient-to-br from-amber-300 to-orange-400 rounded-xl mr-4 flex items-center justify-center shadow-lg">
+                      <Coffee className="w-8 h-8 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-amber-900">Beef Lasagna</h4>
+                    </div>
+                    <div className="font-bold text-amber-800">{formatRupiah(32000)}</div>
+                  </motion.div>
 
                 {/* Pricing Breakdown */}
                 <div className="space-y-3 border-t border-amber-200 pt-6">
