@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 import './globals.css'
 import { html } from 'framer-motion/m'
+import React from 'react'
 
 export default function RootLayout({
   children,
@@ -17,15 +18,15 @@ export default function RootLayout({
   // Define routes that should NOT show sidebar
   const noSidebarRoutes = ['/', '/login', '/register']
   const shouldShowSidebar = !noSidebarRoutes.includes(pathname)
+  const [activePage, setActivePage] = React.useState<string>('dashboard');
+
   return (
     <html lang="en" className={`${inter.className}`}>
       <body className="min-h-screen bg-gray-50 antialiased">
         <div className="flex min-h-screen">
           {shouldShowSidebar && (
             <div className="w-64 fixed left-0 top-0 h-full border-r bg-white shadow-sm z-10">
-              <Sidebar open={false} setOpen={function (open: boolean): void {
-                throw new Error('Function not implemented.')
-              } } />
+              <Sidebar open={false} activePage={activePage} setActivePage={setActivePage} />
             </div>
           )}
           
