@@ -1,304 +1,256 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { Coffee, Bean, Heart, Leaf, Users, Star, Sparkles } from 'lucide-react'
+import { 
+  createUserWithEmailAndPassword, 
+  updateProfile,
+} from 'firebase/auth'
+import { auth } from '@/lib/firebase'
 
-export default function Register() {
+export default function RegisterPage() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    agreeTerms: false
-  })
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
-  const handleChange = (e: { target: { name: any; value: any; type: any; checked: any } }) => {
-    const { name, value, type, checked } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }))
-    // Clear error when user starts typing
-    if (error) {
-      setError('')
+  useEffect(() => {
+    setIsVisible(true)
+  }, [])
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError('')
+
+    // Basic validation
+    if (!email || !password || !name) {
+      setError('All fields are required.')
+      setIsSubmitting(false)
+      return
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters long.')
+      setIsSubmitting(false)
+      return
+    }
+
+    try {
+      // Create user with email/password
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      
+      // Update user profile with display name
+      await updateProfile(userCredential.user, {
+        displayName: name
+      })
+
+      // Redirect to dashboard
+      router.push('/dashboard')
+    } catch (err) {
+      setError(getFirebaseErrorMessage(err))
+      setIsSubmitting(false)
     }
   }
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
-    
-    // Validation
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields')
-      setIsLoading(false)
-      return
+  function getFirebaseErrorMessage(error: unknown): string {
+    if (typeof error !== 'object' || error === null || !('code' in error)) {
+      return 'An unknown error occurred'
     }
     
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
-      setIsLoading(false)
-      return
-    }
+    const firebaseError = error as { code?: string; message?: string }
     
-    if (!formData.agreeTerms) {
-      setError('You must agree to the terms and conditions')
-      setIsLoading(false)
-      return
+    switch (firebaseError.code) {
+      case 'auth/email-already-in-use': return 'This email address is already in use.'
+      case 'auth/invalid-email': return 'The email address is not valid.'
+      case 'auth/weak-password': return 'Password should be at least 6 characters.'
+      case 'auth/network-request-failed': return 'Network error. Please check your internet connection and try again.'
+      case 'auth/user-disabled': return 'This account has been disabled.'
+      default: return firebaseError.message || 'Registration failed. Please try again.'
     }
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      // Simulate successful registration
-      router.push('/dashboard')
-    }, 2000)
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5ebe0] to-[#d6ccc2] p-4">
-      <div className="w-full max-w-md px-6 py-8">
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-center mb-8"
-        >
-          <div className="bg-[#6f4e37] p-4 rounded-full shadow-lg transform hover:rotate-12 transition-transform duration-300">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="text-white text-4xl w-8 h-8"
-            >
-              <path d="M8 2a1 1 0 000 2h2.024c1.875 0 3.652.29 5.018.654l.897.22a1 1 0 10.462-1.946l-.897-.22c-1.542-.386-3.506-.708-5.48-.708H8zM4 5a2 2 0 012-2h8a2 2 0 012 2v5.24l2.803.701A2 2 0 0120 13v2a2 2 0 01-2 2v1a2 2 0 01-2 2H8a2 2 0 01-2-2v-1a2 2 0 01-2-2v-2c0-.85.53-1.616 1.336-1.913L8 9.647V5zm2 0v5.647l2.336.584A2 2 0 0110 13v5h4v-5c0-.85.53-1.616 1.336-1.913L18 10.353V5H6z"/>
-            </svg>
-          </div>
-        </motion.div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 relative overflow-hidden">
+      {/* Floating decorative elements */}
+      <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-amber-200/40 to-orange-200/40 rounded-full blur-xl animate-pulse"></div>
+      <div className="absolute top-40 right-20 w-16 h-16 bg-gradient-to-br from-rose-200/40 to-pink-200/40 rounded-full blur-lg animate-pulse delay-1000"></div>
+      <div className="absolute bottom-32 left-20 w-24 h-24 bg-gradient-to-br from-emerald-200/40 to-green-200/40 rounded-full blur-xl animate-pulse delay-500"></div>
+      <div className="absolute bottom-20 right-16 w-12 h-12 bg-gradient-to-br from-blue-200/40 to-indigo-200/40 rounded-full blur-lg animate-pulse delay-700"></div>
 
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+      <div className="relative z-10 max-w-md mx-auto px-6 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="bg-white p-8 rounded-2xl shadow-lg border border-[#e6d3c4] relative overflow-hidden"
+          className="w-full"
         >
-          {/* Decorative elements */}
-          <div className="absolute -top-10 -right-10 w-20 h-20 bg-[#f2e8dc] rounded-full opacity-30"></div>
-          <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-[#f2e8dc] rounded-full opacity-30"></div>
-          
-          <div className="relative z-10">
-            <h1 className="text-3xl font-bold text-center text-[#5e412f] mb-2">
-              Create Account
-            </h1>
-            <p className="text-center text-[#8b6f47] mb-8">
-              Join Brew & Bliss today
-            </p>
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl overflow-hidden border border-amber-100/50 hover:shadow-amber-200/50 transition-all duration-500">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-amber-600 via-orange-500 to-amber-700 p-8 text-center relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent"></div>
+              <div className="absolute top-0 left-0 w-full h-full opacity-10">
+                {[...Array(10)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 0.3, y: 0 }}
+                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    className="absolute"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                    }}
+                  >
+                    <Bean className="w-6 h-6 text-amber-900" />
+                  </motion.div>
+                ))}
+              </div>
+              
+              <motion.div
+                animate={{ rotate: -5, y: [0, -5, 0] }}
+                transition={{ repeat: Infinity, duration: 3 }}
+                className="inline-block relative z-10"
+              >
+                <Coffee className="w-12 h-12 text-amber-100 mx-auto" strokeWidth={1.5} />
+              </motion.div>
+              
+              <div className="relative z-10 mt-4">
+                <div className="inline-flex items-center gap-2 mb-3 px-4 py-1.5 bg-amber-100/20 rounded-full border border-amber-200/30">
+                  <Sparkles className="w-4 h-4 text-amber-100" />
+                  <span className="text-amber-50 text-sm font-medium">JOIN OUR COMMUNITY</span>
+                  <Sparkles className="w-4 h-4 text-amber-100" />
+                </div>
+                
+                <h2 className="text-3xl font-bold text-amber-50">
+                  Create Your Account
+                </h2>
+                <p className="text-amber-200 mt-2">
+                  Become part of the Brew & Bliss family
+                </p>
+              </div>
+            </div>
 
-            <AnimatePresence>
+            {/* Form */}
+            <form onSubmit={handleRegister} className="p-8 space-y-6">
               {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -20 }}
+                <motion.div 
+                  initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
-                  className="mb-6"
+                  className="p-3 bg-red-50 text-red-600 rounded-lg text-sm border border-red-100"
                 >
-                  <div className="flex items-center justify-between bg-red-50 text-red-700 p-4 rounded-lg border border-red-100 shadow-sm">
-                    <div className="flex items-center">
-                      <svg className="w-5 h-5 mr-3 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
-                      </svg>
-                      <span>{error}</span>
-                    </div>
-                    <button 
-                      onClick={() => setError('')} 
-                      className="text-red-400 hover:text-red-600 transition-colors"
-                      aria-label="Close error message"
-                    >
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/>
-                      </svg>
-                    </button>
-                  </div>
+                  {error}
                 </motion.div>
               )}
-            </AnimatePresence>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4">
-                {/* Name input */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-amber-900 mb-2">
+                  Full Name
+                </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className={`w-5 h-5 ${error ? "text-red-500" : "text-[#a47148]"}`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
-                    </svg>
-                  </div>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:border transition-colors ${
-                      error
-                        ? "border-red-300 focus:ring-red-200 focus:border-red-300"
-                        : "border-[#d6ccc2] focus:ring-[#e6d3c4] focus:border-[#a47148]"
-                    }`}
-                    placeholder="Full name"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your Name"
+                    className="w-full px-4 py-3 bg-white/70 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-amber-900 placeholder-amber-400"
                     required
-                    aria-invalid={!!error}
                   />
-                </div>
-
-                {/* Email input */}
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className={`w-5 h-5 ${error ? "text-red-500" : "text-[#a47148]"}`} fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                    </svg>
-                  </div>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:border transition-colors ${
-                      error
-                        ? "border-red-300 focus:ring-red-200 focus:border-red-300"
-                        : "border-[#d6ccc2] focus:ring-[#e6d3c4] focus:border-[#a47148]"
-                    }`}
-                    placeholder="Email address"
-                    required
-                    aria-invalid={!!error}
-                  />
-                </div>
-
-                {/* Password input */}
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className={`w-5 h-5 ${error ? "text-red-500" : "text-[#a47148]"}`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
-                    </svg>
-                  </div>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:border transition-colors ${
-                      error
-                        ? "border-red-300 focus:ring-red-200 focus:border-red-300"
-                        : "border-[#d6ccc2] focus:ring-[#e6d3c4] focus:border-[#a47148]"
-                    }`}
-                    placeholder="Password"
-                    required
-                    aria-invalid={!!error}
-                  />
-                </div>
-
-                {/* Confirm Password input */}
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className={`w-5 h-5 ${error ? "text-red-500" : "text-[#a47148]"}`} fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
-                    </svg>
-                  </div>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:ring-2 focus:border transition-colors ${
-                      error
-                        ? "border-red-300 focus:ring-red-200 focus:border-red-300"
-                        : "border-[#d6ccc2] focus:ring-[#e6d3c4] focus:border-[#a47148]"
-                    }`}
-                    placeholder="Confirm Password"
-                    required
-                    aria-invalid={!!error}
-                  />
+                  <Users className="absolute right-3 top-3.5 w-5 h-5 text-amber-400" />
                 </div>
               </div>
 
-              <div className="flex items-start">
-                <div className="flex items-center h-5">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-amber-900 mb-2">
+                  Email Address
+                </label>
+                <div className="relative">
                   <input
-                    id="agree-terms"
-                    name="agreeTerms"
-                    type="checkbox"
-                    checked={formData.agreeTerms}
-                    onChange={handleChange}
-                    className="h-4 w-4 text-[#6f4e37] focus:ring-[#6f4e37] border-[#b08968] rounded"
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 bg-white/70 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-amber-900 placeholder-amber-400"
+                    required
                   />
+                  <Heart className="absolute right-3 top-3.5 w-5 h-5 text-amber-400" />
                 </div>
-                <div className="ml-3 text-sm">
-                  <label htmlFor="agree-terms" className="text-[#5e412f]">
-                    I agree to the{' '}
-                    <button type="button" className="text-[#8b6f47] hover:text-[#6f4e37] font-medium transition-colors">
-                      Terms and Conditions
-                    </button>
-                  </label>
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-amber-900 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full px-4 py-3 bg-white/70 border border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-amber-900 placeholder-amber-400"
+                    required
+                    minLength={6}
+                  />
+                  <Leaf className="absolute right-3 top-3.5 w-5 h-5 text-amber-400" />
                 </div>
+                <p className="text-xs text-amber-600 mt-2">Minimum 6 characters</p>
               </div>
 
               <motion.button
                 type="submit"
-                disabled={isLoading}
-                whileTap={{ scale: isLoading ? 1 : 0.98 }}
-                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#6f4e37] hover:bg-[#5e412f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a47148] transition-colors ${
-                  isLoading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={isSubmitting}
+                className={`w-full py-4 px-6 rounded-xl font-bold text-white transition-all ${
+                  isSubmitting ? 'bg-amber-400' : 'bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700'
+                } shadow-lg hover:shadow-xl`}
               >
-                {isLoading ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Creating account...
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <motion.span
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Bean className="w-5 h-5" />
+                    </motion.span>
+                    Creating Account...
                   </span>
-                ) : "Create Account"}
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    Register Now
+                  </span>
+                )}
               </motion.button>
             </form>
 
-            <div className="mt-6">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#d6ccc2]"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-[#a47148]">Already have an account?</span>
-                </div>
-              </div>
-
-              <motion.div 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="mt-4"
-              >
+            {/* Footer */}
+            <div className="px-8 pb-8 text-center">
+              <p className="text-sm text-amber-800">
+                Already have an account?{' '}
                 <button
                   onClick={() => router.push('/login')}
-                  className="w-full flex justify-center py-2 px-4 border border-[#c9b29b] rounded-lg shadow-sm text-sm font-medium text-[#5e412f] bg-white hover:bg-[#f2e8dc] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#a47148] transition-colors"
+                  className="font-medium text-amber-600 hover:text-orange-600 underline underline-offset-4"
                 >
-                  Sign in instead
+                  Sign in here
                 </button>
-              </motion.div>
+              </p>
+              
+              <div className="flex justify-center gap-1 mt-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />
+                ))}
+              </div>
             </div>
           </div>
-        </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 text-center text-sm text-[#5e412f]"
-        >
-          <p>© {new Date().getFullYear()} Brew & Bliss Café. All rights reserved.</p>
         </motion.div>
       </div>
     </div>
