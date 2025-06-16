@@ -10,10 +10,9 @@ import {
   IconShoppingCart,
   IconUser,
   IconMenu2,
-  IconX,
+  IconX
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "../../lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +22,13 @@ interface SidebarProps {
   setActivePage: (page: string) => void;
 }
 
-interface SidebarLinkProps {
+const SidebarLink = ({
+  link,
+  active,
+  onClick,
+  open,
+  isHovered
+}: {
   link: {
     label: string;
     icon: React.ReactNode;
@@ -34,46 +39,41 @@ interface SidebarLinkProps {
   active?: boolean;
   onClick: () => void;
   open: boolean;
-  isHovered?: boolean;
-}
-
-const SidebarLink: React.FC<SidebarLinkProps> = ({ 
-  link, 
-  active, 
-  onClick, 
-  open,
-  isHovered 
+  isHovered: boolean;
 }) => {
   const showTooltip = !open && isHovered;
 
   return (
-    <motion.div className="relative">
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+    <motion.div
+      className="relative"
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+    >
+      <button
         onClick={onClick}
-        className={cn(
-          "flex items-center rounded-lg p-2 text-sm font-medium transition-colors cursor-pointer w-full",
-          active
-            ? "bg-amber-900 text-white"
-            : "text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800",
-          !open ? "justify-center" : ""
-        )}
-        aria-current={active ? "page" : undefined}
+        className={`
+          flex items-center p-3 rounded-xl w-full transition-all duration-300
+          ${active
+            ? "bg-gradient-to-r from-amber-600 to-amber-500 text-white shadow-lg"
+            : "text-gray-600 hover:bg-amber-50 hover:text-amber-700"
+          }
+          ${!open ? "justify-center" : "px-4"}
+        `}
       >
-        <span className="flex items-center justify-center w-5 h-5">
+        <span className={`flex ${active ? "text-white" : "text-amber-600"}`}>
           {link.icon}
         </span>
         {open && (
           <motion.span
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            className="ml-3"
+            className="ml-3 font-medium"
           >
             {link.label}
           </motion.span>
         )}
-      </motion.button>
+      </button>
 
       <AnimatePresence>
         {showTooltip && (
@@ -82,7 +82,7 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
             transition={{ type: "spring", damping: 25 }}
-            className="absolute left-full ml-2 top-0 bg-white shadow-lg rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700"
+            className="absolute left-full ml-2 top-0 bg-white shadow-lg rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap z-50 border border-gray-200"
           >
             {link.label}
           </motion.div>
@@ -93,19 +93,23 @@ const SidebarLink: React.FC<SidebarLinkProps> = ({
 };
 
 const Logo = ({ open }: { open: boolean }) => (
-  <Link href="/" className="relative z-20 flex items-center px-2 py-4">
+  <Link href="/" className="flex items-center px-2 py-6">
     <motion.div
-      className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-amber-900"
-      whileHover={{ rotate: 5 }}
-    />
+      className="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center shadow-md"
+      whileHover={{ rotate: 5, scale: 1.05 }}
+      transition={{ type: "spring" }}
+    >
+      <IconCoffee className="text-white w-5 h-5" />
+    </motion.div>
     {open && (
-      <motion.span
+      <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
-        className="ml-2 text-lg font-semibold text-black dark:text-white"
+        className="ml-3"
       >
-        Brew & Bliss
-      </motion.span>
+        <h1 className="text-xl font-bold text-gray-800">Brew & Bliss</h1>
+        <p className="text-xs text-gray-500">Coffee Experience</p>
+      </motion.div>
     )}
   </Link>
 );
@@ -123,42 +127,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       label: "Dashboard",
       key: "dashboard",
-      icon: <IconBrandTabler className="h-5 w-5" />,
+      icon: <IconBrandTabler className="w-5 h-5" />,
       href: "/dashboard",
       description: "Analytics and overview"
     },
     {
       label: "Menu & Order",
       key: "menu-order",
-      icon: <IconShoppingCart className="h-5 w-5" />,
+      icon: <IconShoppingCart className="w-5 h-5" />,
       href: "/menu-order",
       description: "Browse and order items"
     },
     {
       label: "Reservation",
       key: "reservation",
-      icon: <IconCalendar className="h-5 w-5" />,
+      icon: <IconCalendar className="w-5 h-5" />,
       href: "/reservation",
       description: "Book a table in advance"
     },
     {
       label: "Payment",
       key: "payment",
-      icon: <IconCash className="h-5 w-5" />,
+      icon: <IconCash className="w-5 h-5" />,
       href: "/payment",
       description: "Transaction history"
     },
     {
       label: "About Us",
       key: "about",
-      icon: <IconCoffee className="h-5 w-5" />,
+      icon: <IconCoffee className="w-5 h-5" />,
       href: "/about",
       description: "Our story and mission"
     },
     {
       label: "Logout",
       key: "logout",
-      icon: <IconArrowLeft className="h-5 w-5" />,
+      icon: <IconArrowLeft className="w-5 h-5" />,
       description: "Sign out from system"
     },
   ];
@@ -178,89 +182,88 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <motion.aside
-      initial={{ width: open ? 240 : 64 }}
-      animate={{ width: open ? 240 : 64 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={cn(
-        "relative h-full border-r border-neutral-200 dark:border-neutral-800",
-        "bg-white dark:bg-neutral-950"
-      )}
-      aria-label="Sidebar"
+      initial={{ width: open ? 260 : 80 }}
+      animate={{ width: open ? 260 : 80 }}
+      transition={{ type: "spring", damping: 20, stiffness: 100 }}
+      className={`
+        h-screen fixed left-0 top-0 z-50
+        bg-white border-r border-gray-200
+        shadow-xl overflow-hidden
+        flex flex-col
+      `}
     >
-      <div className="flex h-full flex-col p-2 justify-between gap-6">
-        <div className="flex flex-col overflow-y-auto">
-          <div className="flex justify-between items-center">
-            <Logo open={open} />
-            <motion.button
-              onClick={toggleSidebar}
-              className="p-1 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+      <div className="flex-1 flex flex-col p-4 overflow-y-auto">
+        <div className="flex justify-between items-center">
+          <Logo open={open} />
+          <motion.button
+            onClick={toggleSidebar}
+            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {open ? <IconX size={20} /> : <IconMenu2 size={20} />}
+          </motion.button>
+        </div>
+        
+        <nav className="mt-6 space-y-2">
+          {links.map((link) => (
+            <div 
+              key={link.key}
+              onMouseEnter={() => setHoveredItem(link.key)}
+              onMouseLeave={() => setHoveredItem(null)}
             >
-              {open ? <IconX size={18} /> : <IconMenu2 size={18} />}
-            </motion.button>
-          </div>
+              <SidebarLink
+                link={link}
+                active={activePage === link.key}
+                onClick={() => handleLinkClick(link.key, link.href)}
+                open={open}
+                isHovered={hoveredItem === link.key}
+              />
+              {open && activePage === link.key && (
+                <motion.p 
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-xs text-gray-500 mt-1 px-4"
+                >
+                  {link.description}
+                </motion.p>
+              )}
+            </div>
+          ))}
+        </nav>
+      </div>
 
-          <motion.nav className="mt-6 flex flex-col gap-1">
-            {links.map((link) => (
-              <div 
-                key={link.key}
-                onMouseEnter={() => setHoveredItem(link.key)}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                <SidebarLink
-                  link={link}
-                  active={activePage === link.key}
-                  onClick={() => handleLinkClick(link.key, link.href)}
-                  open={open}
-                  isHovered={hoveredItem === link.key}
-                />
-                {open && activePage === link.key && (
-                  <motion.p 
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 px-2"
-                  >
-                    {link.description}
-                  </motion.p>
-                )}
+      <div 
+        className="p-4 border-t border-gray-200"
+        onMouseEnter={() => setHoveredItem('profile')}
+        onMouseLeave={() => setHoveredItem(null)}
+      >
+        <SidebarLink
+          link={{
+            key: "profile",
+            label: "My Profile",
+            icon: (
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 flex items-center justify-center">
+                <IconUser className="w-3 h-3 text-amber-800" />
               </div>
-            ))}
-          </motion.nav>
-        </div>
-
-        <div 
-          className="mb-4 border-t border-neutral-200 dark:border-neutral-800 pt-2"
-          onMouseEnter={() => setHoveredItem('profile')}
-          onMouseLeave={() => setHoveredItem(null)}
-        >
-          <SidebarLink
-            link={{
-              key: "profile",
-              label: "My Profile",
-              icon: (
-                <div className="w-5 h-5 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
-                  <IconUser className="w-3 h-3 text-neutral-600 dark:text-neutral-300" />
-                </div>
-              ),
-              href: "/profile",
-              description: "Account settings"
-            }}
-            active={activePage === 'profile'}
-            onClick={() => handleLinkClick('profile', '/profile')}
-            open={open}
-            isHovered={hoveredItem === 'profile'}
-          />
-          {open && activePage === 'profile' && (
-            <motion.p 
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 px-2"
-            >
-              Account settings
-            </motion.p>
-          )}
-        </div>
+            ),
+            href: "/profile",
+            description: "Account settings"
+          }}
+          active={activePage === 'profile'}
+          onClick={() => handleLinkClick('profile', '/profile')}
+          open={open}
+          isHovered={hoveredItem === 'profile'}
+        />
+        {open && activePage === 'profile' && (
+          <motion.p 
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-xs text-gray-500 mt-1 px-4"
+          >
+            Account settings
+          </motion.p>
+        )}
       </div>
     </motion.aside>
   );
