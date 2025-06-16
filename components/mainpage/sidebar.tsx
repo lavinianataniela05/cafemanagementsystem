@@ -71,7 +71,7 @@ const SidebarLink = ({
         className={`
           flex items-center p-3 rounded-xl w-full transition-all duration-300 relative overflow-hidden
           ${active
-            ? "bg-gradient-to-r from-orange-900 via-amber-900 to-orange-900 text-white shadow-lg shadow-orange-900/30"
+            ? "bg-gradient-to-r from-[#6B4226] to-[#3B2314] via-amber-900 to-orange-900 text-white shadow-lg shadow-orange-900/30"
             : "text-amber-900 hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-50 hover:shadow-sm"
           }
           ${!open ? "justify-center" : "px-4"}
