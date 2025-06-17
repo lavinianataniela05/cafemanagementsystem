@@ -642,33 +642,33 @@ export default function CafeDashboard() {
   const menuItems: MenuItem[] = [
     { 
       icon: "☕", 
-      name: "Signature Espresso", 
+      name: "Cinnamon Roll Latte", 
       color: "from-amber-50 to-amber-100", 
-      price: "$3.50",
-      description: "Rich, bold flavor with notes of chocolate",
+      price: "Rp. 28.000",
+      description: "Latte with cinnamon roll flavor",
       popular: true
     },
     { 
       icon: "🥛", 
-      name: "Vanilla Latte", 
+      name: "Vanilla Bean Latte", 
       color: "from-rose-50 to-rose-100", 
-      price: "$4.50",
-      description: "Smooth espresso with steamed milk and vanilla"
+      price: "Rp. 26.000",
+      description: "Latte with rich vanilla flavor"
     },
     { 
       icon: "🍫", 
-      name: "Dark Mocha", 
+      name: "Iced Mocha", 
       color: "from-stone-50 to-stone-100", 
-      price: "$5.00",
-      description: "Decadent chocolate and espresso blend",
+      price: "Rp. 27.000",
+      description: "Chilled mocha with whipped cream",
       popular: true
     },
     { 
       icon: "❄️", 
-      name: "Cold Brew", 
+      name: "Kopi Tubruk", 
       color: "from-blue-50 to-blue-100", 
-      price: "$4.00",
-      description: "Smooth, refreshing coffee served ice-cold"
+      price: "Rp. 15.000",
+      description: "Traditional Indonesian coffee with grounds"
     }
   ];
 
