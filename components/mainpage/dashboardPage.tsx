@@ -747,7 +747,9 @@ export default function CafeDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
+    // <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50">
+        <div className="p-8 bg-green-50 min-h-screen">
+
       {/* Mobile Menu Button */}
       <button 
         onClick={toggleMenu}
